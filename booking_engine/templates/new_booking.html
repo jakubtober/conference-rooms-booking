@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+        <p><h1 class="text-center">New booking for <font color="green">{{ room.name }}</font></h1></p>
+        <p><h2 class="text-center">Please choose date</h2></p>
+
+        {% if date_is_past %}
+            <p><font color="#dc143c">Please select present or future date...</font></p>
+        {% endif %}
+
+{% if new_booking %}
+
+<h3>You have booked <font color="green">{{ room.name }}</font> for <font color="green">{{ new_booking.date }}</font></h3>
+
+{% endif %}
+
+{% if room_is_booked and not date_is_past %}
+
+<h3><font color="red">Room is already booked on this date</font></h3>
+
+{% endif %}
+
+            <form class="text-center" action="#" method ='POST'>
+                {% csrf_token %}
+
+                <label>Date:<input type="date" name="date" value="{{ date }}"></label>
+                <label>Comment: <input type="text" name="comment" size="50"></br></label>
+                <input type="submit" value="Book">
+            </form>
+
+{% if bookings %}
+<table class="table table-condensed text-center" style="margin-top: 50px;">
+    <tr>
+        <th>This conference room is already booked on:</th>
+    </tr>
+
+    {% for booking in bookings %}
+
+    <tr>
+        <td>{{ booking.date }}</td>
+    </tr>
+
+    {% endfor %}
+</table>
+{% endif %}
+
+<a href="{% url 'rooms' %}"><h5><strong>Return to the homepage</strong></h5></a>
+
+{% endblock %}

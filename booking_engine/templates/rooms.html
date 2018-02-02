@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    tr:hover {background-color: #bfd1d3;}
+</style>
+
+    <h1 class="text-center">Check availability</h1>
+        <form class="text-center" action="#" method="POST">
+            {% csrf_token %}
+            <input type="date" value="{{ date }}" name="user_date"></label>
+            <input type="submit" value="Reresh">
+        </form>
+
+        {% if date_is_past %}
+            <p><font color="#dc143c">Select present or future date...</font></p>
+        {% endif %}
+
+        <div class="container">
+            <p><h2 class="text-center">Rooms status on {{ date }}</h2></p>
+                <table class="table table-condensed text-center">
+                    <tr>
+                        <th><h5><strong>Room name</strong></h5></th>
+                        <th><h5><strong>Availability</strong></h5></th>
+                    </tr>
+
+                    {% for room in rooms %}
+
+                    {% if room in booked_rooms %}
+
+                    <tr>
+                        <td><a href="{% url 'details' room_id=room.id %}" title="Click to book">{{ room.name }}</a>
+                            <a style="margin-left: 15px;" href="{% url 'modify_room' room_id=room.id %}" title="Click to edit">&#9998;</a>
+                            <a href="{% url 'delete_room' room_id=room.id %}" title="Click to delete">&#10005;</a>
+                        </td>
+                        <td><strong><font color="red"> No available</font></strong></td>
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td><a href="{% url 'details' room_id=room.id %}" title="Click to book">{{ room.name }}</a>
+                            <a  style="margin-left: 15px;" href="{% url 'modify_room' room_id=room.id %}" title="Click to edit">&#9998;</a>
+                            <a  href="{% url 'delete_room' room_id=room.id %}" title="Click to delete">&#10005;</a>
+                        </td>
+                        <td>
+                            <strong><font color="green"> Available</font></strong>
+
+                        </td>
+                    </tr>
+
+                    {% endif %}
+
+                    {% endfor %}
+
+                    <tr>
+                        <td>
+
+                        </td>
+                    </tr>
+
+                </table>
+        </div>
+
+        <form action="{% url 'new_room' %}" method="get">
+            {% csrf_token %}
+            <input type="submit" value="&#10133; Add new room">
+        </form>
+
+
+{% endblock %}

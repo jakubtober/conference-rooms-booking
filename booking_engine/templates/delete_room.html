@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<p><h2>Do you really wan't to delete room <font color="green">{{ room.name }}</font></h2></p>
+    <form action="#" method ='POST'>
+        {% csrf_token %}
+
+        <input type="submit" name="confirmation" value="Yes">
+        <input type="submit" name="confirmation" value="No">
+
+    </form>
+
+{% if delete_room %}
+<p>
+    <h3><strong><font color="green"> Room {{ room.name }} has been deleted</font></strong></h3>
+</p>
+
+<p>
+    <a href="{% url 'rooms' %}"><h5><strong>Return to the homepage</strong></h5></a>
+</p>
+
+{% endif %}
+
+{% if return_to_homepage %}
+
+<p>
+    <a href="{% url 'rooms' %}"><h5><strong>Return to the homepage</strong></h5></a>
+</p>
+
+{% endif %}
+
+
+{% endblock %}

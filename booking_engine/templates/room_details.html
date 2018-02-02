@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<p><h1 class="text-center">Details for <font color="green">{{ room.name }}</font></h1></p>
+
+<table class="table table-condensed text-center">
+    <tr>
+        <th><h5></h5></th>
+        <th><h5><strong>Seats</strong></h5></th>
+        <th><h5><strong>Projector</strong></h5></th>
+        <th><h5><strong>Bookings</strong></h5></th>
+    </tr>
+    <tr>
+        <td>{{ room.name }}</td>
+        <td>{{ room.seats }}</td>
+
+        {% if room.projector %}
+
+        <td>Yes</td>
+
+        {% else %}
+
+        <td>No</td>
+
+        {% endif %}
+
+        <td>
+            {% for booking in bookings%}
+
+            <p>{{ booking }}</p>
+
+            {% endfor %}
+
+            <form action="{% url 'reservation' room_id=room.id %}" method="get">
+                {% csrf_token %}
+                <input type="submit" value="Book this room">
+            </form>
+
+        </td>
+    </tr>
+
+</table>
+
+<a href="{% url 'rooms' %}"><h5><strong>Return to the homepage</strong></h5></a>
+
+{% endblock %}

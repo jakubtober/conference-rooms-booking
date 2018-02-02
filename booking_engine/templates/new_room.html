@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Add new room</h2>
+    <form action="#" method ='POST'>
+        {% csrf_token %}
+        <p><label>Room name:</br>
+            <input type="text" name="name">
+        </label></p>
+
+        <p><label>Seats:</br>
+            <input type="number" name="seats">
+        </label></p>
+
+        <label><p>Projector?</p>
+            <input type="radio" name="projector" value="yes" checked>Yes</input>
+            <input type="radio" name="projector" value="no">No</input>
+        </label></br>
+
+        <p><input type="submit" value="&#10133; Add room"></p>
+
+        {% if new_room %}
+        <h3><strong><font color="green"> New room has been added</font></strong></h3>
+        {% endif %}
+    </form>
+
+{% endblock %}

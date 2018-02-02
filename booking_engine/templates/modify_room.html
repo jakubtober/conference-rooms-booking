@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<p><h1 class="text-center">Edit <font color="green">{{ room.name }}</font></h1></p>
+
+<table class="table table-condensed text-center">
+    <tr>
+        <th><h5></h5></th>
+        <th><h5><strong>Seats</strong></h5></th>
+        <th><h5><strong>Projector</strong></h5></th>
+        <th></th>
+    </tr>
+    <tr>
+        <form action="#" method="POST" id="edit">
+            {% csrf_token %}
+
+            <td><input type="text" value="{{ room.name }}" name="name" required="required"></td>
+            <td><input type="number" value="{{ room.seats }}" name="seats" required="required"></td>
+
+            {% if room.projector %}
+
+            <td>
+                <select name="projector">
+                   <option value="yes" selected>Yes</option>
+                   <option value="no">No</option>
+                </select>
+            </td>
+
+            {% else %}
+
+            <td>
+                <select name="projector" form="edit">
+                   <option value="yes">Yes</option>
+                   <option value="no"selected>No</option>
+                </select>
+            </td>
+
+            {% endif %}
+            <td>
+            <input type="submit" value="Save changes">
+            </form>
+            </td>
+    </tr>
+
+</table>
+
+{% if is_room_updated %}
+<p>
+    <h3><strong><font color="green"> Room {{ room.name }} has been updated</font></strong></h3>
+
+</p>
+{% endif %}
+
+{% if name_error %}
+    <h5><font color="red">Name can't be blank...</font></h5>
+{% endif %}
+
+{% if seats_error %}
+    <h5><font color="red">Room needs to have at least 1 seat...</font></h5>
+{% endif %}
+
+<a href="{% url 'rooms' %}"><h5><strong>Return to the homepage</strong></h5></a>
+
+{% endblock %}
