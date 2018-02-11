@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    tr:hover {background-color: #bfd1d3;}
+</style>
+
+    <h1 class="text-center"><p>Advanced search</p></h1>
+
+        <form class="text-center" action="/search/" method="GET">
+            {% csrf_token %}
+            <p>Date:</p>
+            <p><input type="date" value="{{ date }}" name="user_date" required></p>
+            <p>Room name:</p>
+            <p><input type="text" name="name"></p>
+            <p>Max number of seats:</p>
+            <p><input type="number" style="width: 5em" name="seats" min="1" max="1000" required></p>
+
+            <p>Projector?</p>
+            <p>
+                <input type="radio" name="projector" value="yes" checked>Yes</input>
+                <input type="radio" name="projector" value="no">No</input>
+            </p>
+            <p><input type="submit" value="Search"></p>
+        </form>
+
+<a href="{% url 'rooms' %}"><h5><strong>Return to the homepage</strong></h5></a>
+
+{% endblock %}

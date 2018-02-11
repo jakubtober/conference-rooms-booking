@@ -15,11 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from book_conference.views import Rooms, NewRoom, RoomDetails, NewBooking, DeleteRoom, ModifyRoom
+from book_conference.views import Rooms, NewRoom, RoomDetails, NewBooking, DeleteRoom, ModifyRoom, RoomSearch, SearchResults
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^search/', SearchResults.as_view(), name='search_results'),
     url(r'^rooms/', Rooms.as_view(), name='rooms'),
+    url(r'^room_search/', RoomSearch.as_view(), name='search'),
     url(r'^room/new/', NewRoom.as_view(), name='new_room'),
     url(r'^room/delete/(?P<room_id>\d+)/', DeleteRoom.as_view(), name='delete_room'),
     url(r'^room/modify/(?P<room_id>\d+)/', ModifyRoom.as_view(), name='modify_room'),

@@ -1,11 +1,56 @@
+# Create your views here.
+from django.views import View
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from book_conference.models import Room, Booking
 from datetime import datetime
 
-# Create your views here.
-from django.views import View
-from django.views.decorators.csrf import csrf_exempt
+
+class RoomSearch(View):
+    def get(self, request):
+        date = datetime.today().strftime('%Y-%m-%d')
+
+        return render(request, 'search.html', {
+            'date': date,
+        })
+
+    def post(self, request):
+        return HttpResponse('Sorry, POST no good...')
+
+
+class SearchResults(View):
+    def get(self, request):
+        rooms = []
+        user_date = request.GET.get('user_date')
+        date = datetime.strptime(user_date, '%Y-%m-%d').strftime('%Y-%m-%d')
+        date_is_past = False
+        user_seats = int(request.GET.get('seats'))
+        room_name = request.GET.get('name')
+        has_projector = request.GET.get('projector')
+        projector = False
+
+        if has_projector == 'yes':
+            projector = True
+
+        if date < datetime.today().strftime('%Y-%m-%d'):
+            date = datetime.today().strftime('%Y-%m-%d')
+            date_is_past = True
+
+        rooms_matching_name = Room.objects.all().filter(Q(name__icontains=room_name), Q(seats__gte=user_seats), Q(projector=projector))
+
+        for room in rooms_matching_name:
+            if not room.is_booked(date) and not date_is_past:
+                rooms.append(room)
+
+        return render(request, 'search_results.html', {
+            'date': date,
+            'date_is_past': date_is_past,
+            'rooms': rooms,
+        })
+
+    def post(self, request):
+        pass
 
 
 class Rooms(View):
@@ -22,7 +67,6 @@ class Rooms(View):
                 booked_rooms.append(room)
             else:
                 not_booked_rooms.append(room)
-
 
         return render(request, 'rooms.html', {
             'date': date,
@@ -59,6 +103,7 @@ class Rooms(View):
             'not_booked_rooms': not_booked_rooms,
         })
 
+
 class RoomDetails(View):
     def get(self, request, room_id):
         room_id = int(room_id)
@@ -73,6 +118,7 @@ class RoomDetails(View):
     def post(self, room_id):
         pass
 
+
 class NewRoom(View):
     def get(self, request):
         new_room = []
@@ -80,20 +126,36 @@ class NewRoom(View):
             'new_room': new_room,
         })
 
-
     def post(self, request):
-
+        new_room = []
         has_projector = False
         name_of_the_new_room = request.POST.get('name')
-        new_room_capacity = int(request.POST.get('seats'))
+        new_room_capacity = 0
+
+        name_error = False
+        seats_error = False
+
+        if request.POST.get('seats'):
+            new_room_capacity = int(request.POST.get('seats'))
+        else:
+            seats_error = True
+
+        if new_room_capacity <= 0:
+            seats_error = True
+
+        if name_of_the_new_room.isspace() or name_of_the_new_room == '':
+            name_error = True
 
         if request.POST.get('projector') == 'yes':
             has_projector = True
 
-        new_room = Room.objects.create(name=name_of_the_new_room, seats=new_room_capacity, projector=has_projector)
+        if not name_error and not seats_error:
+            new_room = Room.objects.create(name=name_of_the_new_room, seats=new_room_capacity, projector=has_projector)
 
         return render(request, 'new_room.html', {
             'new_room': new_room,
+            'name_error': name_error,
+            'seats_error': seats_error,
         })
 
 
@@ -101,7 +163,6 @@ class DeleteRoom(View):
     def get(self, request, room_id):
         room_id = int(room_id)
         room = Room.objects.get(id=room_id)
-        print(room_id)
 
 
         return render(request, 'delete_room.html', {
@@ -151,7 +212,7 @@ class ModifyRoom(View):
         new_room_name = str(request.POST.get('name'))
         new_room_capacity = int(request.POST.get('seats'))
 
-        if new_room_name.isspace() and not new_room_name == '':
+        if new_room_name.isspace() or new_room_name == '':
             name_error = True
 
         if new_room_capacity <= 0:
@@ -179,7 +240,14 @@ class NewBooking(View):
     def get(self, request, room_id):
         room_id = int(room_id)
         room = Room.objects.get(id=room_id)
-        date = datetime.today().strftime("%Y-%m-%d")
+
+        user_date = request.GET.get('date')
+
+        if user_date != None:
+            date = datetime.strptime(user_date, '%Y-%m-%d').strftime('%Y-%m-%d')
+        else:
+            date = datetime.today().strftime("%Y-%m-%d")
+
         bookings = room.bookings.filter(date__gte=datetime.today())
 
         return render(request, 'new_booking.html', {

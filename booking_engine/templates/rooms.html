@@ -10,6 +10,7 @@
             {% csrf_token %}
             <input type="date" value="{{ date }}" name="user_date"></label>
             <input type="submit" value="Reresh">
+            <p><a href="{% url 'search' %}">Advanced search</a></p>
         </form>
 
         {% if date_is_past %}
@@ -17,7 +18,7 @@
         {% endif %}
 
         <div class="container">
-            <p><h2 class="text-center">Rooms status on {{ date }}</h2></p>
+            <p><h2 class="text-center">All rooms on {{ date }}</h2></p>
                 <table class="table table-condensed text-center">
                     <tr>
                         <th><h5><strong>Room name</strong></h5></th>
@@ -33,7 +34,7 @@
                             <a style="margin-left: 15px;" href="{% url 'modify_room' room_id=room.id %}" title="Click to edit">&#9998;</a>
                             <a href="{% url 'delete_room' room_id=room.id %}" title="Click to delete">&#10005;</a>
                         </td>
-                        <td><strong><font color="red"> No available</font></strong></td>
+                        <td><strong><font color="red"> Not available</font></strong></td>
                     </tr>
 
                     {% else %}

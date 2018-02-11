@@ -6,11 +6,11 @@
     <form action="#" method ='POST'>
         {% csrf_token %}
         <p><label>Room name:</br>
-            <input type="text" name="name">
+            <input type="text" name="name" required>
         </label></p>
 
         <p><label>Seats:</br>
-            <input type="number" name="seats">
+            <input type="number" name="seats" required>
         </label></p>
 
         <label><p>Projector?</p>
@@ -24,5 +24,15 @@
         <h3><strong><font color="green"> New room has been added</font></strong></h3>
         {% endif %}
     </form>
+
+{% if name_error %}
+    <h5><font color="red">Name can't be blank...</font></h5>
+{% endif %}
+
+{% if seats_error %}
+    <h5><font color="red">Room needs to have at least 1 seat...</font></h5>
+{% endif %}
+
+<a href="{% url 'rooms' %}"><h5><strong>Return to the homepage</strong></h5></a>
 
 {% endblock %}
