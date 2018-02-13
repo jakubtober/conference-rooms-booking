@@ -115,8 +115,8 @@ class RoomDetails(View):
             'bookings': bookings,
         })
 
-    def post(self, room_id):
-        pass
+    def post(self):
+        return HttpResponse('Sorry, POST no good...')
 
 
 class NewRoom(View):
@@ -130,7 +130,7 @@ class NewRoom(View):
         new_room = []
         has_projector = False
         name_of_the_new_room = request.POST.get('name')
-        new_room_capacity = 0
+        new_room_capacity = 1
 
         name_error = False
         seats_error = False
@@ -164,7 +164,6 @@ class DeleteRoom(View):
         room_id = int(room_id)
         room = Room.objects.get(id=room_id)
 
-
         return render(request, 'delete_room.html', {
             'room': room,
         })
@@ -172,7 +171,7 @@ class DeleteRoom(View):
     def post(self, request, room_id):
         room_id = int(room_id)
         room = Room.objects.get(id=room_id)
-        delete_room = None
+        delete_room = False
         return_to_homepage = False
 
         if request.POST.get('confirmation') == 'Yes':
@@ -280,7 +279,7 @@ class NewBooking(View):
 
         if not date_is_past and not room_is_booked:
             comment = request.POST.get('comment')
-            new_booking = Booking.objects.create(room=room, comment=comment, date=request.POST.get('date'))
+            new_booking = Booking.objects.create(room=room, comment=comment, date=date)
 
         return render(request, 'new_booking.html', {
             'room': room,
